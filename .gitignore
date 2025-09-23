@@ -8,7 +8,6 @@ compile_commands.json
 
 # Vcpkg výstupy (necháváme manifest a vcpkg.json)
 vcpkg_installed/
-vcpkg-configuration.json
 *.log
 
 # Binárky a spustitelné soubory
