@@ -22,3 +22,12 @@ cmake --build build
 
 ./build/icp
 ```
+
+## Build & run Windows
+```bash
+Remove-Item -Recurse -Force build
+
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE="C:/Users/tomch/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
+
+cmake --build build
+```
