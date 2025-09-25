@@ -1,18 +1,38 @@
-cmake_minimum_required(VERSION 3.10)
-project(icp VERSION 0.0.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.30)
 
-set(CMAKE_CXX_STANDARD 17)
+project(icp VERSION 2025.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(OpenCV CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(GLEW CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-add_executable(icp src/main.cpp)
+find_package(glm           CONFIG REQUIRED)
+find_package(GLEW                 REQUIRED)
+find_package(glfw3         CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
-target_include_directories(icp PRIVATE ${OpenCV_INCLUDE_DIRS})
+if(WIN32)
+    find_package(OpenCV CONFIG REQUIRED PATHS "<path to your opencv>")
+elseif(UNIX)
+    find_package(OpenCV CONFIG REQUIRED)
+endif()
 
-target_link_libraries(icp PRIVATE ${OpenCV_LIBS} GLEW::GLEW glfw glm::glm)
+set(PROJECT_SOURCES
+    src/main.cpp
+)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    GLEW::GLEW
+    glfw
+    glm::glm
+    nlohmann_json::nlohmann_json
+    ${OpenCV_LIBS}
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${OpenCV_INCLUDE_DIRS}
+)
