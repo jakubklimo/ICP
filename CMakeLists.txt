@@ -20,6 +20,7 @@ endif()
 
 set(PROJECT_SOURCES
     src/main.cpp
+    src/ImageProcessor.cpp
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

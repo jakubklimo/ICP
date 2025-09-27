@@ -35,3 +35,4 @@ vcpkg_installed/
 *.swp
 *.tmp
 *.bak
+.vs/
