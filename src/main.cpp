@@ -11,6 +11,7 @@ public:
     int zarovka(void);
     int hrnekimg(void);
     int hrnekvid(void);
+    int face_video(void);
     ~App();
 };
 
@@ -25,6 +26,7 @@ int App::run(void) {
     std::cout << "1. Najdi stred zarovky\n";
     std::cout << "2. Separace cerveneho hrnku z obrazku\n";
     std::cout << "3. Separace cerveneho hrnku z videa\n";
+    std::cout << "4. Obličej z videa\n";
     std::cout << "Zadej volbu: ";
 
     int choice;
@@ -37,6 +39,8 @@ int App::run(void) {
         return hrnekimg();
     case 3:
         return hrnekvid();
+    case 4:
+        return face_video();
     default:
         std::cerr << "Neplatná volba!\n";
         return EXIT_FAILURE;
@@ -81,6 +85,41 @@ int App::zarovka(void) {
     }
     return EXIT_SUCCESS;
 }
+
+int App::face_video(void) {
+    cv::CascadeClassifier face_cascade;
+    if (!face_cascade.load("./resources/haarcascade_frontalface_default.xml")) {
+        std::cerr << "Nepodarilo se nacist klasifikator obliceje!\n";
+        return EXIT_FAILURE;
+    }
+
+    cv::VideoCapture cap(0);
+    if (!cap.isOpened()) {
+        std::cerr << "Nepodarilo se otevrit kameru!\n";
+        return EXIT_FAILURE;
+    }
+
+    cv::Mat frame;
+    while (true) {
+        cap >> frame;
+        if (frame.empty()) break;
+
+        cv::Point2f center = ImageProcessor::detect_face(frame, face_cascade);
+
+        cv::Mat scene_cross;
+        frame.copyTo(scene_cross);
+        ImageProcessor::draw_cross_normalized(scene_cross, center, 30);
+
+        cv::imshow("Face Detection", scene_cross);
+
+        int key = cv::waitKey(30);
+        if (key == 27) break;
+    }
+
+    cap.release();
+    return EXIT_SUCCESS;
+}
+
 
 int App::hrnekimg(void) {
     cv::Mat img = cv::imread("./resources/red_cup.jpg");

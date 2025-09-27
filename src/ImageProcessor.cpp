@@ -109,3 +109,24 @@ void ImageProcessor::detect_red_object_video(const std::string& videoPath,
 
     cap.release();
 }
+
+
+// ---------- detect_face ----------
+cv::Point2f ImageProcessor::detect_face(const cv::Mat& frame, cv::CascadeClassifier& face_cascade) {
+    cv::Mat gray;
+    cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(gray, gray); // zlepší detekci
+
+    std::vector<cv::Rect> faces;
+    face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, cv::Size(30, 30));
+
+    cv::Point2f center(0.5f, 0.5f); // default støed obrazu
+
+    if (!faces.empty()) {
+        cv::Rect face = faces[0];
+        center.x = static_cast<float>(face.x + face.width / 2) / frame.cols;
+        center.y = static_cast<float>(face.y + face.height / 2) / frame.rows;
+    }
+
+    return center;
+}
