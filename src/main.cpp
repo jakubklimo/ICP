@@ -1,6 +1,7 @@
 #include "ImageProcessor.h"
 #include <iostream>
 #include <chrono>
+#include <opencv2/opencv.hpp>
 
 class App {
 public:
@@ -8,8 +9,8 @@ public:
     bool init(void);
     int run(void);
     int zarovka(void);
-    int runOption2(void);
-    int runOption3(void);
+    int hrnekimg(void);
+    int hrnekvid(void);
     ~App();
 };
 
@@ -22,8 +23,8 @@ bool App::init() {
 int App::run(void) {
     std::cout << "===== MENU =====\n";
     std::cout << "1. Najdi stred zarovky\n";
-    std::cout << "2. zadani\n";
-    std::cout << "3. zadani\n";
+    std::cout << "2. Separace cerveneho hrnku z obrazku\n";
+    std::cout << "3. Separace cerveneho hrnku z videa\n";
     std::cout << "Zadej volbu: ";
 
     int choice;
@@ -33,9 +34,9 @@ int App::run(void) {
     case 1:
         return zarovka();
     case 2:
-        return runOption2();
+        return hrnekimg();
     case 3:
-        return runOption3();
+        return hrnekvid();
     default:
         std::cerr << "Neplatná volba!\n";
         return EXIT_FAILURE;
@@ -81,16 +82,31 @@ int App::zarovka(void) {
     return EXIT_SUCCESS;
 }
 
+int App::hrnekimg(void) {
+    cv::Mat img = cv::imread("./resources/red_cup.jpg");
+    if (img.empty()) return EXIT_FAILURE;
 
-int App::runOption2(void) {
-    std::cout << "Moznost 2\n";
+    cv::Mat mask;
+    cv::Point2f centroid = ImageProcessor::detect_red_object(
+        img, mask,
+        cv::Scalar(175, 115, 115), cv::Scalar(180, 255, 255)
+    );
+
+    cv::imshow("Original", img);
+    cv::imshow("Maska", mask);
+    cv::waitKey(0);
     return EXIT_SUCCESS;
 }
 
-int App::runOption3(void) {
-    std::cout << "Moznost 3\n";
+int App::hrnekvid(void) {
+    ImageProcessor::detect_red_object_video(
+        "./resources/video.mkv",
+        cv::Scalar(175, 115, 115), cv::Scalar(180, 255, 255)
+    );
     return EXIT_SUCCESS;
 }
+
+
 
 App::~App() {
     cv::destroyAllWindows();

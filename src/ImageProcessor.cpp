@@ -1,5 +1,6 @@
 #include "ImageProcessor.h"
 
+// ---------- find_object_luma ----------
 cv::Point2f ImageProcessor::find_object_luma(const cv::Mat& input, cv::Mat& output, int threshold) {
     input.copyTo(output);
 
@@ -9,16 +10,11 @@ cv::Point2f ImageProcessor::find_object_luma(const cv::Mat& input, cv::Mat& outp
     for (int y = 0; y < input.rows; y++) {
         for (int x = 0; x < input.cols; x++) {
             cv::Vec3b pixel = input.at<cv::Vec3b>(y, x);
-
             unsigned char R = pixel[2];
             unsigned char G = pixel[1];
             unsigned char B = pixel[0];
 
-            // pøevod na Y podle JPEG (8bit)
-            unsigned char Y = static_cast<unsigned char>(
-                0.299 * R
-                + 0.587 * G
-                + 0.114 * B);
+            unsigned char Y = static_cast<unsigned char>(0.299 * R + 0.587 * G + 0.114 * B);
 
             if (Y >= threshold) {
                 output.at<cv::Vec3b>(y, x) = cv::Vec3b(255, 255, 255);
@@ -32,39 +28,84 @@ cv::Point2f ImageProcessor::find_object_luma(const cv::Mat& input, cv::Mat& outp
         }
     }
 
-    cv::Point2f center_normalized(0.5f, 0.5f); // defaultnì støed obrazu
+    cv::Point2f center_normalized(0.5f, 0.5f);
     if (count_white > 0) {
-        float cx = static_cast<float>(sumX / count_white);
-        float cy = static_cast<float>(sumY / count_white);
-
-        center_normalized.x = cx / input.cols;
-        center_normalized.y = cy / input.rows;
+        center_normalized.x = static_cast<float>(sumX / count_white / input.cols);
+        center_normalized.y = static_cast<float>(sumY / count_white / input.rows);
     }
     return center_normalized;
 }
 
+// ---------- draw_cross ----------
 void ImageProcessor::draw_cross(cv::Mat& img, int x, int y, int size) {
-    cv::Point p1(x - size / 2, y);
-    cv::Point p2(x + size / 2, y);
-    cv::Point p3(x, y - size / 2);
-    cv::Point p4(x, y + size / 2);
-
-    cv::line(img, p1, p2, CV_RGB(255, 0, 0), 3);
-    cv::line(img, p3, p4, CV_RGB(255, 0, 0), 3);
+    cv::line(img, cv::Point(x - size / 2, y), cv::Point(x + size / 2, y), CV_RGB(255, 0, 0), 3);
+    cv::line(img, cv::Point(x, y - size / 2), cv::Point(x, y + size / 2), CV_RGB(255, 0, 0), 3);
 }
 
+// ---------- draw_cross_normalized ----------
 void ImageProcessor::draw_cross_normalized(cv::Mat& img, cv::Point2f center_normalized, int size) {
     center_normalized.x = std::clamp(center_normalized.x, 0.0f, 1.0f);
     center_normalized.y = std::clamp(center_normalized.y, 0.0f, 1.0f);
     size = std::clamp(size, 1, std::min(img.cols, img.rows));
 
     cv::Point2f center_absolute(center_normalized.x * img.cols, center_normalized.y * img.rows);
+    draw_cross(img, static_cast<int>(center_absolute.x), static_cast<int>(center_absolute.y), size);
+}
 
-    cv::Point2f p1(center_absolute.x - size / 2, center_absolute.y);
-    cv::Point2f p2(center_absolute.x + size / 2, center_absolute.y);
-    cv::Point2f p3(center_absolute.x, center_absolute.y - size / 2);
-    cv::Point2f p4(center_absolute.x, center_absolute.y + size / 2);
+// ---------- detect_red_object ----------
+cv::Point2f ImageProcessor::detect_red_object(const cv::Mat& img, cv::Mat& mask,
+    cv::Scalar lower, cv::Scalar upper,
+    bool useMorph) {
+    cv::Mat hsv, mask1, mask2;
+    cv::cvtColor(img, hsv, cv::COLOR_BGR2HSV);
+    cv::inRange(hsv, lower, upper, mask);
 
-    cv::line(img, p1, p2, CV_RGB(255, 0, 0), 3);
-    cv::line(img, p3, p4, CV_RGB(255, 0, 0), 3);
+    if (useMorph) {
+        cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+        cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);
+        cv::morphologyEx(mask, mask, cv::MORPH_CLOSE, element);
+    }
+
+    // centroid
+    std::vector<cv::Point> points;
+    cv::findNonZero(mask, points);
+    cv::Point2f centroid_normalized(0.5f, 0.5f);
+    if (!points.empty()) {
+        cv::Point2f sum(0.0f, 0.0f);
+        for (auto& p : points) sum += cv::Point2f(p.x, p.y);
+        centroid_normalized = cv::Point2f(sum.x / points.size() / img.cols,
+            sum.y / points.size() / img.rows);
+    }
+
+    // vykreslení køíže
+    draw_cross_normalized(mask, centroid_normalized, 25);
+
+    return centroid_normalized;
+}
+
+// ---------- detect_red_object_video ----------
+void ImageProcessor::detect_red_object_video(const std::string& videoPath,
+    cv::Scalar lower, cv::Scalar upper,
+    bool useMorph) {
+    cv::VideoCapture cap(videoPath);
+    if (!cap.isOpened()) {
+        std::cerr << "Nepodarilo se otevrit video!\n";
+        return;
+    }
+
+    cv::Mat frame, mask;
+    while (true) {
+        cap >> frame;
+        if (frame.empty()) break;
+
+        cv::Point2f centroid = detect_red_object(frame, mask, lower, upper, useMorph);
+
+        cv::imshow("Grabbed", frame);
+        cv::imshow("Maska", mask);
+
+        int key = cv::waitKey(30);
+        if (key == 27) break;
+    }
+
+    cap.release();
 }
