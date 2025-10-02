@@ -23,7 +23,7 @@ set(PROJECT_SOURCES
     src/ImageProcessor.cpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/CrossDrawer.h" "src/CrossDrawer.cpp" "src/FaceProcessor.h" "src/FaceProcessor.cpp")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     GLEW::GLEW

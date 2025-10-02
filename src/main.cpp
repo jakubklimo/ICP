@@ -1,4 +1,5 @@
 #include "ImageProcessor.h"
+#include "FaceProcessor.h"
 #include <iostream>
 #include <chrono>
 #include <opencv2/opencv.hpp>
@@ -26,7 +27,7 @@ int App::run(void) {
     std::cout << "1. Najdi stred zarovky\n";
     std::cout << "2. Separace cerveneho hrnku z obrazku\n";
     std::cout << "3. Separace cerveneho hrnku z videa\n";
-    std::cout << "4. Obličej z videa\n";
+    std::cout << "4. Oblicej z videa\n";
     std::cout << "Zadej volbu: ";
 
     int choice;
@@ -87,38 +88,17 @@ int App::zarovka(void) {
 }
 
 int App::face_video(void) {
-    cv::CascadeClassifier face_cascade;
-    if (!face_cascade.load("./resources/haarcascade_frontalface_default.xml")) {
-        std::cerr << "Nepodarilo se nacist klasifikator obliceje!\n";
+    try {
+        FaceProcessor faceProc("./resources/haarcascade_frontalface_default.xml",
+            "./resources/lockscreen.jpg");
+        return faceProc.run_from_camera();
+    }
+    catch (std::exception const& e) {
+        std::cerr << "Face video failed: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
-
-    cv::VideoCapture cap(0);
-    if (!cap.isOpened()) {
-        std::cerr << "Nepodarilo se otevrit kameru!\n";
-        return EXIT_FAILURE;
-    }
-
-    cv::Mat frame;
-    while (true) {
-        cap >> frame;
-        if (frame.empty()) break;
-
-        cv::Point2f center = ImageProcessor::detect_face(frame, face_cascade);
-
-        cv::Mat scene_cross;
-        frame.copyTo(scene_cross);
-        ImageProcessor::draw_cross_normalized(scene_cross, center, 30);
-
-        cv::imshow("Face Detection", scene_cross);
-
-        int key = cv::waitKey(30);
-        if (key == 27) break;
-    }
-
-    cap.release();
-    return EXIT_SUCCESS;
 }
+
 
 
 int App::hrnekimg(void) {
