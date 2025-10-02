@@ -1,7 +1,0 @@
-# ninja log v6
-33	368	7806169327879409	CMakeFiles/icp.dir/src/main.cpp.obj.ddi	1458c995f313b756
-374	420	7806169331276680	CMakeFiles/icp.dir/CXX.dd	d960bf257f797777
-374	420	7806169331276680	C:/Users/tomch/ICP/out/build/x64-Debug/CMakeFiles/icp.dir/CXXModules.json	d960bf257f797777
-374	420	7806169331276680	CMakeFiles/icp.dir/src/main.cpp.obj.modmap	d960bf257f797777
-422	3721	7806169331774284	CMakeFiles/icp.dir/src/main.cpp.obj	5e0ca3e151486545
-3722	4255	7806169364766752	icp.exe	35bdb87c9573d184

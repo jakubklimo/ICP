@@ -38,3 +38,4 @@ vcpkg_installed/
 .vs/
 out/
 build/
+out/
