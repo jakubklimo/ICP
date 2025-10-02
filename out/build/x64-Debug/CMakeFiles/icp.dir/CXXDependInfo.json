@@ -3,7 +3,7 @@
 	"compiler-frontend-variant" : "MSVC",
 	"compiler-id" : "MSVC",
 	"compiler-simulate-id" : "",
-	"config" : "Debug",
+	"config" : "Release",
 	"cxx-modules" : {},
 	"database-info" : null,
 	"dir-cur-bld" : "C:/Users/tomch/ICP/out/build/x64-Debug",

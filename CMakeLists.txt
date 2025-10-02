@@ -5,7 +5,7 @@ project(icp VERSION 2025.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
 
 find_package(glm           CONFIG REQUIRED)
 find_package(GLEW                 REQUIRED)

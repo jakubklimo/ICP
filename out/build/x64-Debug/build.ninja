@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: icp
-# Configurations: Debug
+# Configurations: Release
 # =============================================================================
 
 #############################################
@@ -24,7 +24,7 @@ ninja_required_version = 1.5
 #############################################
 # Set configuration variable for custom commands.
 
-CONFIGURATION = Debug
+CONFIGURATION = Release
 # =============================================================================
 # Include auxiliary files.
 
@@ -49,19 +49,19 @@ cmake_ninja_workdir = C$:\Users\tomch\ICP\out\build\x64-Debug\
 
 build cmake_object_order_depends_target_icp: phony || .
 
-build CMakeFiles\icp.dir\src\main.cpp.obj.ddi: CXX_SCAN__icp_Debug C$:\Users\tomch\ICP\src\main.cpp || cmake_object_order_depends_target_icp
+build CMakeFiles\icp.dir\src\main.cpp.obj.ddi: CXX_SCAN__icp_Release C$:\Users\tomch\ICP\src\main.cpp || cmake_object_order_depends_target_icp
   DEFINES = -DGLFW_DLL
   DEP_FILE = CMakeFiles\icp.dir\src\main.cpp.obj.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles\icp.dir\src\main.cpp.obj.ddi
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJ_FILE = CMakeFiles\icp.dir\src\main.cpp.obj
   PREPROCESSED_OUTPUT_FILE = CMakeFiles\icp.dir\src\main.cpp.obj.ddi.i
 
-build CMakeFiles\icp.dir\src\main.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\Users\tomch\ICP\src\main.cpp | CMakeFiles\icp.dir\src\main.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
+build CMakeFiles\icp.dir\src\main.cpp.obj: CXX_COMPILER__icp_scanned_Release C$:\Users\tomch\ICP\src\main.cpp | CMakeFiles\icp.dir\src\main.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
   DEFINES = -DGLFW_DLL
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\icp.dir\src\main.cpp.obj.modmap
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\icp.dir
   OBJECT_FILE_DIR = CMakeFiles\icp.dir\src
@@ -69,19 +69,19 @@ build CMakeFiles\icp.dir\src\main.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\U
   TARGET_PDB = icp.pdb
   dyndep = CMakeFiles/icp.dir/CXX.dd
 
-build CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi: CXX_SCAN__icp_Debug C$:\Users\tomch\ICP\src\ImageProcessor.cpp || cmake_object_order_depends_target_icp
+build CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi: CXX_SCAN__icp_Release C$:\Users\tomch\ICP\src\ImageProcessor.cpp || cmake_object_order_depends_target_icp
   DEFINES = -DGLFW_DLL
   DEP_FILE = CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJ_FILE = CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj
   PREPROCESSED_OUTPUT_FILE = CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi.i
 
-build CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\Users\tomch\ICP\src\ImageProcessor.cpp | CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
+build CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj: CXX_COMPILER__icp_scanned_Release C$:\Users\tomch\ICP\src\ImageProcessor.cpp | CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
   DEFINES = -DGLFW_DLL
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.modmap
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\icp.dir
   OBJECT_FILE_DIR = CMakeFiles\icp.dir\src
@@ -89,19 +89,19 @@ build CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj: CXX_COMPILER__icp_scanned_D
   TARGET_PDB = icp.pdb
   dyndep = CMakeFiles/icp.dir/CXX.dd
 
-build CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi: CXX_SCAN__icp_Debug C$:\Users\tomch\ICP\src\CrossDrawer.cpp || cmake_object_order_depends_target_icp
+build CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi: CXX_SCAN__icp_Release C$:\Users\tomch\ICP\src\CrossDrawer.cpp || cmake_object_order_depends_target_icp
   DEFINES = -DGLFW_DLL
   DEP_FILE = CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJ_FILE = CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj
   PREPROCESSED_OUTPUT_FILE = CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi.i
 
-build CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\Users\tomch\ICP\src\CrossDrawer.cpp | CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
+build CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj: CXX_COMPILER__icp_scanned_Release C$:\Users\tomch\ICP\src\CrossDrawer.cpp | CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
   DEFINES = -DGLFW_DLL
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.modmap
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\icp.dir
   OBJECT_FILE_DIR = CMakeFiles\icp.dir\src
@@ -109,19 +109,19 @@ build CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj: CXX_COMPILER__icp_scanned_Debu
   TARGET_PDB = icp.pdb
   dyndep = CMakeFiles/icp.dir/CXX.dd
 
-build CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi: CXX_SCAN__icp_Debug C$:\Users\tomch\ICP\src\FaceProcessor.cpp || cmake_object_order_depends_target_icp
+build CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi: CXX_SCAN__icp_Release C$:\Users\tomch\ICP\src\FaceProcessor.cpp || cmake_object_order_depends_target_icp
   DEFINES = -DGLFW_DLL
   DEP_FILE = CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJ_FILE = CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj
   PREPROCESSED_OUTPUT_FILE = CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi.i
 
-build CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\Users\tomch\ICP\src\FaceProcessor.cpp | CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
+build CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj: CXX_COMPILER__icp_scanned_Release C$:\Users\tomch\ICP\src\FaceProcessor.cpp | CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
   DEFINES = -DGLFW_DLL
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.modmap
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\icp.dir
   OBJECT_FILE_DIR = CMakeFiles\icp.dir\src
@@ -129,19 +129,19 @@ build CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj: CXX_COMPILER__icp_scanned_De
   TARGET_PDB = icp.pdb
   dyndep = CMakeFiles/icp.dir/CXX.dd
 
-build CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi: CXX_SCAN__icp_Debug C$:\Users\tomch\ICP\src\fps_meter.cpp || cmake_object_order_depends_target_icp
+build CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi: CXX_SCAN__icp_Release C$:\Users\tomch\ICP\src\fps_meter.cpp || cmake_object_order_depends_target_icp
   DEFINES = -DGLFW_DLL
   DEP_FILE = CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi.d
   DYNDEP_INTERMEDIATE_FILE = CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJ_FILE = CMakeFiles\icp.dir\src\fps_meter.cpp.obj
   PREPROCESSED_OUTPUT_FILE = CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi.i
 
-build CMakeFiles\icp.dir\src\fps_meter.cpp.obj: CXX_COMPILER__icp_scanned_Debug C$:\Users\tomch\ICP\src\fps_meter.cpp | CMakeFiles\icp.dir\src\fps_meter.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
+build CMakeFiles\icp.dir\src\fps_meter.cpp.obj: CXX_COMPILER__icp_scanned_Release C$:\Users\tomch\ICP\src\fps_meter.cpp | CMakeFiles\icp.dir\src\fps_meter.cpp.obj.modmap || cmake_object_order_depends_target_icp CMakeFiles\icp.dir\CXX.dd
   DEFINES = -DGLFW_DLL
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\icp.dir\src\fps_meter.cpp.obj.modmap
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -std:c++20 -MDd -Zi
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD
   INCLUDES = -IC:\Users\tomch\ICP -external:IC:\Users\tomch\Downloads\opencv\build\include -external:IC:\Users\tomch\ICP\out\build\x64-Debug\vcpkg_installed\x64-windows\include -external:W0
   OBJECT_DIR = CMakeFiles\icp.dir
   OBJECT_FILE_DIR = CMakeFiles\icp.dir\src
@@ -149,7 +149,7 @@ build CMakeFiles\icp.dir\src\fps_meter.cpp.obj: CXX_COMPILER__icp_scanned_Debug 
   TARGET_PDB = icp.pdb
   dyndep = CMakeFiles/icp.dir/CXX.dd
 
-build CMakeFiles\icp.dir\CXX.dd | C$:\Users\tomch\ICP\out\build\x64-Debug\CMakeFiles\icp.dir\CXXModules.json CMakeFiles\icp.dir\src\main.cpp.obj.modmap CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.modmap CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.modmap CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.modmap CMakeFiles\icp.dir\src\fps_meter.cpp.obj.modmap: CXX_DYNDEP__icp_Debug CMakeFiles\icp.dir\src\main.cpp.obj.ddi CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi | C$:\Users\tomch\ICP\out\build\x64-Debug\CMakeFiles\icp.dir\CXXDependInfo.json
+build CMakeFiles\icp.dir\CXX.dd | C$:\Users\tomch\ICP\out\build\x64-Debug\CMakeFiles\icp.dir\CXXModules.json CMakeFiles\icp.dir\src\main.cpp.obj.modmap CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.modmap CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.modmap CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.modmap CMakeFiles\icp.dir\src\fps_meter.cpp.obj.modmap: CXX_DYNDEP__icp_Release CMakeFiles\icp.dir\src\main.cpp.obj.ddi CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj.ddi CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj.ddi CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj.ddi CMakeFiles\icp.dir\src\fps_meter.cpp.obj.ddi | C$:\Users\tomch\ICP\out\build\x64-Debug\CMakeFiles\icp.dir\CXXDependInfo.json
 
 
 # =============================================================================
@@ -159,12 +159,12 @@ build CMakeFiles\icp.dir\CXX.dd | C$:\Users\tomch\ICP\out\build\x64-Debug\CMakeF
 #############################################
 # Link the executable icp.exe
 
-build icp.exe: CXX_EXECUTABLE_LINKER__icp_Debug CMakeFiles\icp.dir\src\main.cpp.obj CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj CMakeFiles\icp.dir\src\fps_meter.cpp.obj | vcpkg_installed\x64-windows\debug\lib\glew32d.lib vcpkg_installed\x64-windows\debug\lib\glfw3dll.lib vcpkg_installed\x64-windows\debug\lib\glm.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib
-  FLAGS = /DWIN32 /D_WINDOWS /EHsc /Ob0 /Od /RTC1 -MDd -Zi
-  LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
-  LINK_LIBRARIES = vcpkg_installed\x64-windows\debug\lib\glew32d.lib  vcpkg_installed\x64-windows\debug\lib\glfw3dll.lib  vcpkg_installed\x64-windows\debug\lib\glm.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120d.lib  opengl32.lib  glu32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
+build icp.exe: CXX_EXECUTABLE_LINKER__icp_Release CMakeFiles\icp.dir\src\main.cpp.obj CMakeFiles\icp.dir\src\ImageProcessor.cpp.obj CMakeFiles\icp.dir\src\CrossDrawer.cpp.obj CMakeFiles\icp.dir\src\FaceProcessor.cpp.obj CMakeFiles\icp.dir\src\fps_meter.cpp.obj | vcpkg_installed\x64-windows\lib\glew32.lib vcpkg_installed\x64-windows\lib\glfw3dll.lib vcpkg_installed\x64-windows\lib\glm.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib C$:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib
+  FLAGS = /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -MD
+  LINK_FLAGS = /machine:x64 /INCREMENTAL:NO /subsystem:console
+  LINK_LIBRARIES = vcpkg_installed\x64-windows\lib\glew32.lib  vcpkg_installed\x64-windows\lib\glfw3dll.lib  vcpkg_installed\x64-windows\lib\glm.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  C:\Users\tomch\Downloads\opencv\build\x64\vc16\lib\opencv_world4120.lib  opengl32.lib  glu32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\icp.dir
-  POST_BUILD = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\tomch\ICP\out\build\x64-Debug && C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/tomch/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary C:/Users/tomch/ICP/out/build/x64-Debug/icp.exe -installedDir C:/Users/tomch/ICP/out/build/x64-Debug/vcpkg_installed/x64-windows/debug/bin -OutVariable out"
+  POST_BUILD = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\tomch\ICP\out\build\x64-Debug && C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/Users/tomch/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary C:/Users/tomch/ICP/out/build/x64-Debug/icp.exe -installedDir C:/Users/tomch/ICP/out/build/x64-Debug/vcpkg_installed/x64-windows/bin -OutVariable out"
   PRE_LINK = cd .
   TARGET_COMPILE_PDB = CMakeFiles\icp.dir\
   TARGET_FILE = icp.exe
