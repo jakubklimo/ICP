@@ -2,8 +2,11 @@
 #include "ImageProcessor.h"
 #include <iostream>
 
-FaceProcessor::FaceProcessor(const std::string& cascadePath, const std::string& lockscreenPath)
-    : lockscreenPath(lockscreenPath) {
+FaceProcessor::FaceProcessor(const std::string& cascadePath,
+    const std::string& lockscreenPath,
+    const std::string& warningPath)
+    : lockscreenPath(lockscreenPath), warningPath(warningPath)
+{
     if (!face_cascade.load(cascadePath)) {
         throw std::runtime_error("Nepodařilo se načíst Haar cascade: " + cascadePath);
     }
@@ -80,8 +83,9 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
 
     cv::Mat frame;
     cv::Mat lockscreen = cv::imread(lockscreenPath);
-    if (lockscreen.empty()) {
-        std::cerr << "Nepodarilo se nacist lockscreen obrazek!\n";
+    cv::Mat warning = cv::imread(warningPath);
+    if (lockscreen.empty() || warning.empty()) {
+        std::cerr << "Nepodarilo se nacist lockscreen nebo warning obrazek!\n";
         return EXIT_FAILURE;
     }
 
@@ -89,11 +93,27 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         cap >> frame;
         if (frame.empty()) break;
 
-        cv::Point2f faceCenter = detect_face(frame);
-        cv::Mat scene;
-        frame.copyTo(scene);
+        cv::Mat gray;
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        cv::equalizeHist(gray, gray);
 
-        if (faceCenter.x >= 0.0f && faceCenter.y >= 0.0f) {
+        std::vector<cv::Rect> faces;
+        face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, cv::Size(30, 30));
+
+        cv::Mat scene;
+
+        if (faces.empty()) {
+            scene = lockscreen.clone();
+        }
+        else if (faces.size() == 1) {
+            frame.copyTo(scene);
+
+            cv::Rect face = faces[0];
+            cv::Point2f faceCenter(
+                static_cast<float>(face.x + face.width / 2) / frame.cols,
+                static_cast<float>(face.y + face.height / 2) / frame.rows
+            );
+
             cv::Mat mask;
             cv::Point2f cupCenter = ImageProcessor::detect_red_object(
                 frame, mask,
@@ -106,12 +126,12 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
             cv::imshow("Maska hrnku", mask);
         }
         else {
-            scene = lockscreen.clone();
+            scene = warning.clone(); // více než jeden obličej → warning
         }
 
         cv::imshow("Face+Cup Detection", scene);
 
-        if (fps) { // měření FPS
+        if (fps) {
             fps->update();
             if (fps->is_updated())
                 std::cout << "FPS: " << fps->get() << std::endl;
@@ -124,3 +144,4 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
     cap.release();
     return EXIT_SUCCESS;
 }
+

@@ -97,8 +97,12 @@ int App::zarovka(void) {
 
 int App::face_video(void) {
     try {
-        FaceProcessor faceProc("./resources/haarcascade_frontalface_default.xml",
-            "./resources/lockscreen.jpg");
+        FaceProcessor faceProc(
+            "./resources/haarcascade_frontalface_default.xml",
+            "./resources/lockscreen.jpg",
+            "./resources/warning.jpg"
+        );
+
         return faceProc.run_from_camera(&gFPS); // předáme FPS do FaceProcessor
     }
     catch (std::exception const& e) {
@@ -109,8 +113,12 @@ int App::face_video(void) {
 
 int App::face_video_plus(void) {
     try {
-        FaceProcessor faceProc("./resources/haarcascade_frontalface_default.xml",
-            "./resources/lockscreen.jpg");
+        FaceProcessor faceProc(
+            "./resources/haarcascade_frontalface_default.xml",
+            "./resources/lockscreen.jpg",
+            "./resources/warning.jpg"
+        );
+
         return faceProc.run_from_camera_plus(&gFPS);
     }
     catch (std::exception const& e) {

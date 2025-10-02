@@ -36,4 +36,5 @@ vcpkg_installed/
 *.tmp
 *.bak
 .vs/
-.out/
+out/
+build/
