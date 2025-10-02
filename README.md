@@ -27,7 +27,7 @@ cmake --build build
 ```bash
 Remove-Item -Recurse -Force build
 
-cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE="C:/Users/tomch/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE="../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows
 
 cmake --build build
 
