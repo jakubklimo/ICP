@@ -1,4 +1,5 @@
 #include "ImageProcessor.h"
+#include "fps_meter.h"
 
 // ---------- find_object_luma ----------
 cv::Point2f ImageProcessor::find_object_luma(const cv::Mat& input, cv::Mat& output, int threshold) {
@@ -86,7 +87,9 @@ cv::Point2f ImageProcessor::detect_red_object(const cv::Mat& img, cv::Mat& mask,
 // ---------- detect_red_object_video ----------
 void ImageProcessor::detect_red_object_video(const std::string& videoPath,
     cv::Scalar lower, cv::Scalar upper,
-    bool useMorph) {
+    bool useMorph,
+    FPSMeter* fps) {
+
     cv::VideoCapture cap(videoPath);
     if (!cap.isOpened()) {
         std::cerr << "Nepodarilo se otevrit video!\n";
@@ -103,12 +106,19 @@ void ImageProcessor::detect_red_object_video(const std::string& videoPath,
         cv::imshow("Grabbed", frame);
         cv::imshow("Maska", mask);
 
+        if (fps) {
+            fps->update();
+            if (fps->is_updated())
+                std::cout << "FPS: " << fps->get() << std::endl;
+        }
+
         int key = cv::waitKey(30);
         if (key == 27) break;
     }
 
     cap.release();
 }
+
 
 
 // ---------- detect_face ----------

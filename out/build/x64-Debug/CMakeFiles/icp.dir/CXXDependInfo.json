@@ -38,6 +38,11 @@
 			"language" : "CXX",
 			"source" : "C:/Users/tomch/ICP/src/ImageProcessor.cpp"
 		},
+		"CMakeFiles/icp.dir/src/fps_meter.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/tomch/ICP/src/fps_meter.cpp"
+		},
 		"CMakeFiles/icp.dir/src/main.cpp.obj" : 
 		{
 			"language" : "CXX",

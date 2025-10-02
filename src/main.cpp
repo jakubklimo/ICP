@@ -1,8 +1,12 @@
 #include "ImageProcessor.h"
 #include "FaceProcessor.h"
+#include "fps_meter.h"
 #include <iostream>
 #include <chrono>
 #include <opencv2/opencv.hpp>
+
+// Globální FPS měřič pro celý program
+FPSMeter gFPS;
 
 class App {
 public:
@@ -13,12 +17,14 @@ public:
     int hrnekimg(void);
     int hrnekvid(void);
     int face_video(void);
+    int face_video_plus(void);
     ~App();
 };
 
 App::App() {}
 
 bool App::init() {
+    gFPS.reset(); // restart FPS při startu
     return true;
 }
 
@@ -28,20 +34,18 @@ int App::run(void) {
     std::cout << "2. Separace cerveneho hrnku z obrazku\n";
     std::cout << "3. Separace cerveneho hrnku z videa\n";
     std::cout << "4. Oblicej z videa\n";
+    std::cout << "5. Kamera PLUS (oblicej + hrnek)\n";
     std::cout << "Zadej volbu: ";
 
     int choice;
     std::cin >> choice;
 
     switch (choice) {
-    case 1:
-        return zarovka();
-    case 2:
-        return hrnekimg();
-    case 3:
-        return hrnekvid();
-    case 4:
-        return face_video();
+    case 1: return zarovka();
+    case 2: return hrnekimg();
+    case 3: return hrnekvid();
+    case 4: return face_video();
+    case 5: return face_video_plus();
     default:
         std::cerr << "Neplatná volba!\n";
         return EXIT_FAILURE;
@@ -76,6 +80,10 @@ int App::zarovka(void) {
         cv::imshow("frame2", frame2);
 
         while (true) {
+            gFPS.update();
+            if (gFPS.is_updated())
+                std::cout << "FPS: " << gFPS.get() << std::endl;
+
             int key = cv::pollKey();
             if (key == 27) break;
         }
@@ -91,7 +99,7 @@ int App::face_video(void) {
     try {
         FaceProcessor faceProc("./resources/haarcascade_frontalface_default.xml",
             "./resources/lockscreen.jpg");
-        return faceProc.run_from_camera();
+        return faceProc.run_from_camera(&gFPS); // předáme FPS do FaceProcessor
     }
     catch (std::exception const& e) {
         std::cerr << "Face video failed: " << e.what() << std::endl;
@@ -99,7 +107,17 @@ int App::face_video(void) {
     }
 }
 
-
+int App::face_video_plus(void) {
+    try {
+        FaceProcessor faceProc("./resources/haarcascade_frontalface_default.xml",
+            "./resources/lockscreen.jpg");
+        return faceProc.run_from_camera_plus(&gFPS);
+    }
+    catch (std::exception const& e) {
+        std::cerr << "Face video plus failed: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+}
 
 int App::hrnekimg(void) {
     cv::Mat img = cv::imread("./resources/red_cup.jpg");
@@ -113,19 +131,27 @@ int App::hrnekimg(void) {
 
     cv::imshow("Original", img);
     cv::imshow("Maska", mask);
-    cv::waitKey(0);
+
+    while (true) {
+        gFPS.update();
+        if (gFPS.is_updated())
+            std::cout << "FPS: " << gFPS.get() << std::endl;
+
+        int key = cv::waitKey(30);
+        if (key == 27) break;
+    }
+
     return EXIT_SUCCESS;
 }
 
 int App::hrnekvid(void) {
     ImageProcessor::detect_red_object_video(
         "./resources/video.mkv",
-        cv::Scalar(175, 115, 115), cv::Scalar(180, 255, 255)
+        cv::Scalar(175, 115, 115), cv::Scalar(180, 255, 255), true,
+        &gFPS
     );
     return EXIT_SUCCESS;
 }
-
-
 
 App::~App() {
     cv::destroyAllWindows();

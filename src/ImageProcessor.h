@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 
+class FPSMeter;
+
 class ImageProcessor {
 public:
     ImageProcessor() = default;
@@ -21,7 +23,9 @@ public:
 
     static void detect_red_object_video(const std::string& videoPath,
         cv::Scalar lower, cv::Scalar upper,
-        bool useMorph = true);
+        bool useMorph = true,
+        FPSMeter* fps = nullptr);
+
 
     // detekce oblièeje z obrazu
     static cv::Point2f detect_face(const cv::Mat& frame, cv::CascadeClassifier& face_cascade);

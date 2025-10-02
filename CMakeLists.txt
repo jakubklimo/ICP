@@ -21,9 +21,13 @@ endif()
 set(PROJECT_SOURCES
     src/main.cpp
     src/ImageProcessor.cpp
+    src/CrossDrawer.cpp
+    src/FaceProcessor.cpp
+    src/fps_meter.cpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/CrossDrawer.h" "src/CrossDrawer.cpp" "src/FaceProcessor.h" "src/FaceProcessor.cpp")
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES}) 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     GLEW::GLEW
