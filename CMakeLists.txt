@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
     src/CrossDrawer.cpp
     src/FaceProcessor.cpp
     src/fps_meter.cpp
+    src/Renderer3D.cpp
 )
 
 
