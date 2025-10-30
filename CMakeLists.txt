@@ -4,20 +4,16 @@ project(icp VERSION 2025.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_BUILD_TYPE Release)
-
-find_package(glm           CONFIG REQUIRED)
-find_package(GLEW                 REQUIRED)
-find_package(glfw3         CONFIG REQUIRED)
+# --- Balíèky pøes vcpkg ---
+find_package(glm CONFIG REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(OpenCV CONFIG REQUIRED)
 
-if(WIN32)
-    find_package(OpenCV CONFIG REQUIRED PATHS "<path to your opencv>")
-elseif(UNIX)
-    find_package(OpenCV CONFIG REQUIRED)
-endif()
-
+# --- Seznam zdrojù ---
 set(PROJECT_SOURCES
     src/main.cpp
     src/ImageProcessor.cpp
@@ -25,12 +21,22 @@ set(PROJECT_SOURCES
     src/FaceProcessor.cpp
     src/fps_meter.cpp
     src/Renderer3D.cpp
+    src/gl_err_callback.cpp
+
+    # ImGui
+    src/imgui/imgui.cpp
+    src/imgui/imgui_draw.cpp
+    src/imgui/imgui_widgets.cpp
+    src/imgui/imgui_tables.cpp
+    src/imgui/imgui_impl_glfw.cpp
+    src/imgui/imgui_impl_opengl3.cpp
 )
 
+# --- Spustitelný soubor ---
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES}) 
-
-target_link_libraries(${PROJECT_NAME} PRIVATE 
+# --- Linkování knihoven ---
+target_link_libraries(${PROJECT_NAME} PRIVATE
     GLEW::GLEW
     glfw
     glm::glm
@@ -38,6 +44,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OpenCV_LIBS}
 )
 
+# --- Include directories ---
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${OpenCV_INCLUDE_DIRS}

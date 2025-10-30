@@ -6,11 +6,17 @@
 
 #include "Renderer3D.h"
 
+#include "gl_err_callback.h"
+
 #include <iostream>
 
 #include <chrono>
 
 #include <opencv2/opencv.hpp>
+
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
 
 
 
@@ -42,6 +48,9 @@ public:
 
     int face_video_plus_FPS(void);
 
+    void init_gl_debug();
+
+
     ~App();
 
 };
@@ -51,14 +60,43 @@ public:
 App::App() {}
 
 
+bool init_glfw() {
+    if (!glfwInit()) {
+        std::cerr << "GLFW init failed!\n";
+        return false;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    return true;
+}
+
+bool init_glew() {
+    glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        std::cerr << "GLEW init failed: " << glewGetErrorString(err) << '\n';
+        return false;
+    }
+    return true;
+}
 
 bool App::init() {
+    std::cout << "Inicializace GLFW..." << std::endl;
+    if (!init_glfw()) {
+        std::cerr << "GLFW initialization failed!\n";
+        return false;
+    }
 
-    gFPS.reset(); // restart FPS při startu
 
+    init_gl_debug();
+
+    gFPS.reset();
     return true;
-
 }
+
+
+
 
 
 
@@ -85,40 +123,26 @@ int App::run(void) {
 
 
     int choice;
-
     std::cin >> choice;
 
-
-
     switch (choice) {
-
     case 1: return zarovka();
-
     case 2: return hrnekimg();
-
     case 3: return hrnekvid();
-
     case 4: return face_video();
-
     case 5: return face_video_plus();
-
     case 6: return face_video_plus_FPS();
-
     case 7: {
         Renderer3D renderer;
         if (renderer.init()) renderer.run();
         else std::cerr << "Renderer3D initialization failed!\n";
         return EXIT_SUCCESS;
     }
-
-
     default:
-
         std::cerr << "Neplatná volba!\n";
-
         return EXIT_FAILURE;
-
     }
+
 
 }
 
@@ -337,6 +361,26 @@ int App::hrnekvid(void) {
 
     return EXIT_SUCCESS;
 
+}
+
+void App::init_gl_debug()
+{
+    if (GLEW_ARB_debug_output)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(MessageCallback, nullptr);
+
+        GLuint unusedIds = 0;
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+            GL_DEBUG_SEVERITY_NOTIFICATION, 0, &unusedIds, GL_FALSE);
+
+        std::cout << "OpenGL debug output enabled.\n";
+    }
+    else
+    {
+        std::cout << "OpenGL debug output NOT supported.\n";
+    }
 }
 
 
