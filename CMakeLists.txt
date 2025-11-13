@@ -22,6 +22,8 @@ set(PROJECT_SOURCES
     src/fps_meter.cpp
     src/Renderer3D.cpp
     src/gl_err_callback.cpp
+    src/ShaderLoaderApp.cpp
+    src/ShaderProgram.cpp
 
     # ImGui
     src/imgui/imgui.cpp
@@ -33,7 +35,7 @@ set(PROJECT_SOURCES
 )
 
 # --- Spustitelný soubor ---
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/ShaderLoaderApp.h" "src/ShaderLoaderApp.cpp" "src/ShaderProgram.h")
 
 # --- Linkování knihoven ---
 target_link_libraries(${PROJECT_NAME} PRIVATE

@@ -17,6 +17,7 @@
 #include <GL/glew.h>
 
 #include <GLFW/glfw3.h>
+#include "ShaderLoaderApp.h"
 
 
 
@@ -118,6 +119,8 @@ int App::run(void) {
 
     std::cout << "7. OpenGL 3D Renderer (triangle)\n";
 
+    std::cout << "8. Shader Loader Demo\n";
+
     std::cout << "Zadej volbu: ";
 
 
@@ -138,6 +141,13 @@ int App::run(void) {
         else std::cerr << "Renderer3D initialization failed!\n";
         return EXIT_SUCCESS;
     }
+    case 8: {
+        ShaderLoaderApp shaderApp;
+        if (shaderApp.init()) shaderApp.run();
+        else std::cerr << "ShaderLoaderApp initialization failed!\n";
+        return EXIT_SUCCESS;
+    }
+
     default:
         std::cerr << "Neplatná volba!\n";
         return EXIT_FAILURE;
