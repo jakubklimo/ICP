@@ -24,6 +24,10 @@ set(PROJECT_SOURCES
     src/gl_err_callback.cpp
     src/ShaderLoaderApp.cpp
     src/ShaderProgram.cpp
+    src/Model.h
+    src/Mesh.h
+    src/assets.h
+    src/OBJloader.h
 
     # ImGui
     src/imgui/imgui.cpp
@@ -35,7 +39,7 @@ set(PROJECT_SOURCES
 )
 
 # --- Spustitelný soubor ---
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/ShaderLoaderApp.h" "src/ShaderLoaderApp.cpp" "src/ShaderProgram.h")
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/ShaderLoaderApp.h" "src/ShaderLoaderApp.cpp" "src/ShaderProgram.h" "src/Model.h" "src/OBJloader.h" "src/Mesh.h" "src/assets.h" "src/non_copyable.h" "src/OBJloader.cpp")
 
 # --- Linkování knihoven ---
 target_link_libraries(${PROJECT_NAME} PRIVATE

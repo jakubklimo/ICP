@@ -70,3 +70,11 @@ void ShaderProgram::setUniform(const std::string& name, float value) const {
     GLint loc = glGetUniformLocation(programID, name.c_str());
     glUniform1f(loc, value);
 }
+
+void ShaderProgram::setUniform(const std::string& name, const glm::mat4& value) const {
+    GLint loc = glGetUniformLocation(programID, name.c_str());
+    if (loc == -1) {
+        std::cerr << "Uniform '" << name << "' not found!" << std::endl;
+    }
+    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
+}
