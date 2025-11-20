@@ -74,6 +74,8 @@ bool ShaderLoaderApp::initGLFW() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, this);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
 
     return true;
 }
@@ -159,7 +161,7 @@ void ShaderLoaderApp::drawLoop() {
 
             glm::mat4 model = glm::mat4(1.0f);
             glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
-            glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+            glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
             glm::mat4 mvp = proj * view * model;
 
             shaderProgram->setUniform("uMVP", mvp);
@@ -182,3 +184,16 @@ void ShaderLoaderApp::cleanup() {
     if (window) glfwDestroyWindow(window);
     glfwTerminate();
 }
+
+void ShaderLoaderApp::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    ShaderLoaderApp* app = reinterpret_cast<ShaderLoaderApp*>(glfwGetWindowUserPointer(window));
+    if (!app) return;
+    app->handleScroll(yoffset);
+}
+
+void ShaderLoaderApp::handleScroll(double yoffset) {
+    fov -= (float)yoffset;
+    if (fov < 10.0f) fov = 10.0f;
+    if (fov > 80.0f) fov = 80.0f;
+}
+

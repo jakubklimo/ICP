@@ -39,6 +39,12 @@ private:
 
     float movementSpeed = 8.5f;
     float mouseSensitivity = 0.1f;
+    float fov = 45.0f;
+
 
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+    void handleScroll(double yoffset);
+
 };
