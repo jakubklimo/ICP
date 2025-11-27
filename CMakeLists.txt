@@ -25,11 +25,12 @@ set(PROJECT_SOURCES
 
     src/ShaderLoaderApp.cpp
     src/ShaderProgram.cpp
+    src/Texture.cpp
     src/OBJloader.cpp
 
     src/InputManager.cpp
 
-    # pokud tyto jsou čistě hlavy, NEPIŠ .h do SOURCES
+    src/Texture.h
     src/Mesh.h
     src/Model.h
     src/ShaderProgram.h
@@ -47,7 +48,7 @@ set(PROJECT_SOURCES
     src/imgui/imgui_impl_opengl3.cpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/Texture.cpp" "src/Texture.h")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     GLEW::GLEW

@@ -4,6 +4,7 @@
 #include <memory>
 #include "ShaderProgram.h"
 #include "Model.h"
+#include "Texture.h"
 #include <glm/glm.hpp>
 #include "InputManager.h"
 #include "fps_meter.h"
@@ -22,7 +23,10 @@ public:
 private:
     GLFWwindow* window = nullptr;
     std::shared_ptr<ShaderProgram> shaderProgram;
+    std::shared_ptr<ShaderProgram> shaderCube;
     std::unique_ptr<Model> model_;
+    std::unique_ptr<Model> cubeModel;
+    std::unique_ptr<Texture> cubeTexture;
 
     bool initGLFW();
     bool initGLEW();

@@ -76,6 +76,8 @@ bool ShaderLoaderApp::initGLFW() {
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
 
     return true;
 }
@@ -98,6 +100,8 @@ bool ShaderLoaderApp::init() {
 
     glViewport(0, 0, 800, 600);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
+
 
     // zde VYTVOØ InputManager
     inputManager = std::make_unique<InputManager>(window);
@@ -135,6 +139,72 @@ void ShaderLoaderApp::initModel() {
 
         model_ = std::make_unique<Model>();
         model_->addMesh(mesh, shaderProgram, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
+
+        std::vector<Vertex> cubeVertices = {
+            // front
+            {{-0.5f,-0.5f, 0.5f}, {0,0,1}, {0.0f, 0.0f}},
+            {{ 0.5f,-0.5f, 0.5f}, {0,0,1}, {1.0f, 0.0f}},
+            {{ 0.5f, 0.5f, 0.5f}, {0,0,1}, {1.0f, 1.0f}},
+            {{-0.5f, 0.5f, 0.5f}, {0,0,1}, {0.0f, 1.0f}},
+
+            // back
+            {{-0.5f,-0.5f,-0.5f}, {0,0,-1}, {1.0f, 0.0f}},
+            {{ 0.5f,-0.5f,-0.5f}, {0,0,-1}, {0.0f, 0.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {0,0,-1}, {0.0f, 1.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {0,0,-1}, {1.0f, 1.0f}},
+
+            // left
+            {{-0.5f,-0.5f,-0.5f}, {-1,0,0}, {0.0f, 0.0f}},
+            {{-0.5f,-0.5f, 0.5f}, {-1,0,0}, {1.0f, 0.0f}},
+            {{-0.5f, 0.5f, 0.5f}, {-1,0,0}, {1.0f, 1.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {-1,0,0}, {0.0f, 1.0f}},
+
+            // right
+            {{ 0.5f,-0.5f,-0.5f}, {1,0,0}, {1.0f, 0.0f}},
+            {{ 0.5f,-0.5f, 0.5f}, {1,0,0}, {0.0f, 0.0f}},
+            {{ 0.5f, 0.5f, 0.5f}, {1,0,0}, {0.0f, 1.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {1,0,0}, {1.0f, 1.0f}},
+
+            // top
+            {{-0.5f, 0.5f, 0.5f}, {0,1,0}, {0.0f, 0.0f}},
+            {{ 0.5f, 0.5f, 0.5f}, {0,1,0}, {1.0f, 0.0f}},
+            {{ 0.5f, 0.5f,-0.5f}, {0,1,0}, {1.0f, 1.0f}},
+            {{-0.5f, 0.5f,-0.5f}, {0,1,0}, {0.0f, 1.0f}},
+
+            // bottom
+            {{-0.5f,-0.5f, 0.5f}, {0,-1,0}, {0.0f, 0.0f}},
+            {{ 0.5f,-0.5f, 0.5f}, {0,-1,0}, {1.0f, 0.0f}},
+            {{ 0.5f,-0.5f,-0.5f}, {0,-1,0}, {1.0f, 1.0f}},
+            {{-0.5f,-0.5f,-0.5f}, {0,-1,0}, {0.0f, 1.0f}},
+        };
+
+        // Indices
+        std::vector<GLuint> cubeIndices = {
+        0,1,2, 2,3,0,       // front
+        4,5,6, 6,7,4,       // back
+        8,9,10, 10,11,8,    // left
+        12,13,14, 14,15,12, // right
+        16,17,18, 18,19,16, // top
+        20,21,22, 22,23,20  // bottom
+        };
+
+
+
+
+
+        // Naètení shaderu pro krychli
+        shaderCube = std::make_shared<ShaderProgram>("./shaders/textured.vert", "./shaders/textured.frag");
+
+        // Vytvoøení mesh krychle
+        auto cubeMesh = std::make_shared<Mesh>(cubeVertices, cubeIndices, GL_TRIANGLES);
+
+        // Textura
+        cubeTexture = std::make_unique<Texture>("./resources/box_rgb888.png");
+
+        // Model krychle
+        cubeModel = std::make_unique<Model>();
+        cubeModel->addMesh(cubeMesh, shaderCube);
+
     }
     catch (const std::exception& e) {
         std::cerr << "Model load error: " << e.what() << std::endl;
@@ -202,6 +272,25 @@ void ShaderLoaderApp::drawLoop() {
                 // --- vykreslení modelu ---
                 model_->draw();
             }
+
+            // krychle
+            if (cubeModel) {
+                shaderCube->use();
+
+                // bind textury
+                cubeTexture->bind();
+
+                float t = (float)glfwGetTime();
+                glm::mat4 model = glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.5f, 1.0f, 0.0f));
+                glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
+                glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+
+                glm::mat4 mvp = proj * view * model;
+                shaderCube->setUniform("uMVP", mvp);
+
+                cubeModel->draw();
+            }
+
 
             glfwSwapBuffers(window);
             glfwPollEvents();
