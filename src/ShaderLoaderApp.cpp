@@ -7,14 +7,12 @@
 ShaderLoaderApp::ShaderLoaderApp() = default;
 ShaderLoaderApp::~ShaderLoaderApp() { cleanup(); }
 
-// --- Statický callback pro myš ---
 void ShaderLoaderApp::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     ShaderLoaderApp* app = reinterpret_cast<ShaderLoaderApp*>(glfwGetWindowUserPointer(window));
     if (!app) return;
     app->handleMouse(xpos, ypos);
 }
 
-// --- Zpracování pohybu myší ---
 void ShaderLoaderApp::handleMouse(double xpos, double ypos) {
     if (firstMouse) {
         lastX = (float)xpos;
@@ -42,6 +40,7 @@ void ShaderLoaderApp::handleMouse(double xpos, double ypos) {
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     camFront = glm::normalize(front);
 }
+
 
 // --- Pohyb kamery ---
 void ShaderLoaderApp::processInput(float deltaTime) {
@@ -71,10 +70,11 @@ bool ShaderLoaderApp::initGLFW() {
     if (!window) { std::cerr << "Failed to create window\n"; glfwTerminate(); return false; }
     glfwMakeContextCurrent(window);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, this);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
     return true;
@@ -99,7 +99,12 @@ bool ShaderLoaderApp::init() {
     glViewport(0, 0, 800, 600);
     glEnable(GL_DEPTH_TEST);
 
-    // shader
+    // zde VYTVOØ InputManager
+    inputManager = std::make_unique<InputManager>(window);
+    glfwSetWindowUserPointer(window, this); // pointer na ShaderLoaderApp pro mouse a scroll callbacky
+
+
+
     try {
         shaderProgram = std::make_shared<ShaderProgram>(
             "./shaders/simple.vert",
@@ -111,9 +116,10 @@ bool ShaderLoaderApp::init() {
         return false;
     }
 
-    initModel(); // naètení modelu
+    initModel();
     return true;
 }
+
 
 // --- Naètení modelu ---
 void ShaderLoaderApp::initModel() {
@@ -139,40 +145,72 @@ void ShaderLoaderApp::initModel() {
 void ShaderLoaderApp::drawLoop() {
     float lastFrame = 0.0f;
 
-    while (!glfwWindowShouldClose(window)) {
-        float currentFrame = static_cast<float>(glfwGetTime());
-        float deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        while (!glfwWindowShouldClose(window)) {
 
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
+            // --- FPS ---
+            fps_meter.update();
+            if (fps_meter.is_updated()) {
+                current_fps = fps_meter.get();
 
-        processInput(deltaTime);
+                std::string title = "Shader Loader Demo - FPS: "
+                    + std::to_string((int)current_fps)
+                    + " - VSync: "
+                    + (inputManager->isVSync() ? "ON" : "OFF");
 
-        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glfwSetWindowTitle(window, title.c_str());
+            }
 
-        if (model_) {
-            shaderProgram->use();
+            // èas
+            float currentFrame = (float)glfwGetTime();
+            float deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
 
-            float t = static_cast<float>(glfwGetTime());
-            shaderProgram->setUniform("uColor",
-                glm::vec3(sin(t) * 0.5f + 0.5f, 0.5f, cos(t) * 0.5f + 0.5f));
+            // vstupy
+            inputManager->processInput();
+            processInput(deltaTime);
 
-            glm::mat4 model = glm::mat4(1.0f);
-            glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
-            glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-            glm::mat4 mvp = proj * view * model;
+            // --- bezpeèné pøepnutí VSync ---
+            if (inputManager->vsyncToggleRequested) {
+                glfwSwapInterval(inputManager->isVSync() ? 1 : 0);
+                inputManager->vsyncToggleRequested = false;
+            }
 
-            shaderProgram->setUniform("uMVP", mvp);
+            glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            model_->draw();
+            if (model_) {
+                shaderProgram->use();
+
+                // --- nastavení uniform ---
+                float t = (float)glfwGetTime();
+                shaderProgram->setUniform("uColor",
+                    glm::vec3(
+                        sin(t) * 0.5f + 0.5f,
+                        0.5f,
+                        cos(t) * 0.5f + 0.5f
+                    )
+                );
+
+                glm::mat4 model = glm::mat4(1.0f);
+                glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
+                glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f,
+                    0.1f, 100.0f);
+
+                shaderProgram->setUniform("uModel", model);
+                shaderProgram->setUniform("uMVP", proj * view * model);
+
+                // --- vykreslení modelu ---
+                model_->draw();
+            }
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
         }
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
 }
+
+
+
 
 void ShaderLoaderApp::run() {
     drawLoop();

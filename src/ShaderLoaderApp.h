@@ -5,6 +5,8 @@
 #include "ShaderProgram.h"
 #include "Model.h"
 #include <glm/glm.hpp>
+#include "InputManager.h"
+#include "fps_meter.h"
 
 class ShaderLoaderApp {
 public:
@@ -13,6 +15,9 @@ public:
 
     bool init();
     void run();
+
+    std::unique_ptr<InputManager>& getInputManager() { return inputManager; }
+
 
 private:
     GLFWwindow* window = nullptr;
@@ -40,6 +45,13 @@ private:
     float movementSpeed = 8.5f;
     float mouseSensitivity = 0.1f;
     float fov = 45.0f;
+
+    std::unique_ptr<InputManager> inputManager;
+    FPSMeter fps_meter{ std::chrono::duration<double>(1.0) };
+
+    double current_fps = 0.0;
+
+    bool vsync_on = true;
 
 
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);

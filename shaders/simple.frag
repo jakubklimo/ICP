@@ -3,11 +3,17 @@
 out vec4 FragColor;
 
 in vec3 fragNormal;
+
 uniform vec3 uColor;
+uniform vec3 uLightDir;
 
 void main()
 {
-    float intensity = dot(normalize(fragNormal), normalize(vec3(0.0, 0.0, 1.0)));
-    intensity = clamp(intensity, 0.1, 1.0);
-    FragColor = vec4(uColor * intensity, 1.0);
+    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.5));
+    
+    vec3 normal = normalize(fragNormal);
+    
+    float diff = max(dot(normal, lightDir), 0.1);
+
+    FragColor = vec4(uColor * diff, 1.0);
 }

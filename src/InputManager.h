@@ -1,4 +1,5 @@
 #pragma once
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -6,10 +7,10 @@ class InputManager {
 public:
     InputManager(GLFWwindow* win);
 
-    void processInput();
     void updateWindowTitle();
-
+    void processInput();
     bool isVSync() const { return vsync_on; }
+    bool vsyncToggleRequested = false;
 
 private:
     GLFWwindow* window;

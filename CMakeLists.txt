@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+Ôªøcmake_minimum_required(VERSION 3.30)
 
 project(icp VERSION 2025.0.0 LANGUAGES CXX)
 
@@ -6,14 +6,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
 
-# --- BalÌËky p¯es vcpkg ---
+# --- Bal√≠ƒçky p≈ôes vcpkg ---
 find_package(glm CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
 
-# --- Seznam zdroj˘ ---
+# --- Seznam zdroj≈Ø ---
 set(PROJECT_SOURCES
     src/main.cpp
     src/ImageProcessor.cpp
@@ -22,12 +22,21 @@ set(PROJECT_SOURCES
     src/fps_meter.cpp
     src/Renderer3D.cpp
     src/gl_err_callback.cpp
+
     src/ShaderLoaderApp.cpp
     src/ShaderProgram.cpp
-    src/Model.h
+    src/OBJloader.cpp
+
+    src/InputManager.cpp
+
+    # pokud tyto jsou ƒçistƒõ hlavy, NEPI≈† .h do SOURCES
     src/Mesh.h
-    src/assets.h
+    src/Model.h
+    src/ShaderProgram.h
+    src/ShaderLoaderApp.h
     src/OBJloader.h
+    src/assets.h
+    src/non_copyable.h
 
     # ImGui
     src/imgui/imgui.cpp
@@ -38,10 +47,8 @@ set(PROJECT_SOURCES
     src/imgui/imgui_impl_opengl3.cpp
 )
 
-# --- Spustiteln˝ soubor ---
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} "src/ShaderLoaderApp.h" "src/ShaderLoaderApp.cpp" "src/ShaderProgram.h" "src/Model.h" "src/OBJloader.h" "src/Mesh.h" "src/assets.h" "src/non_copyable.h" "src/OBJloader.cpp")
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-# --- Linkov·nÌ knihoven ---
 target_link_libraries(${PROJECT_NAME} PRIVATE
     GLEW::GLEW
     glfw
@@ -50,8 +57,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OpenCV_LIBS}
 )
 
-# --- Include directories ---
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${OpenCV_INCLUDE_DIRS}
 )
