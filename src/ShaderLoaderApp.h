@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include "InputManager.h"
 #include "fps_meter.h"
+#include "FaceProcessor.h"
 
 class ShaderLoaderApp {
 public:
@@ -19,9 +20,6 @@ public:
 
     InputManager* getInputManager() { return inputManager.get(); }
 
-
-
-
 private:
     GLFWwindow* window = nullptr;
     std::shared_ptr<ShaderProgram> shaderProgram;
@@ -29,6 +27,7 @@ private:
     std::unique_ptr<Model> model_;
     std::unique_ptr<Model> cubeModel;
     std::unique_ptr<Texture> cubeTexture;
+    std::unique_ptr<FaceProcessor> faceProcessor;
 
     bool initGLFW();
     bool initGLEW();
@@ -59,10 +58,8 @@ private:
 
     bool vsync_on = true;
 
-
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
     void handleScroll(double yoffset);
-
 };

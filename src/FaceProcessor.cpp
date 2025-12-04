@@ -1,6 +1,7 @@
 ﻿#include "FaceProcessor.h"
 #include "ImageProcessor.h"
 #include <iostream>
+#include <chrono>
 
 FaceProcessor::FaceProcessor(const std::string& cascadePath,
     const std::string& lockscreenPath,
@@ -8,23 +9,73 @@ FaceProcessor::FaceProcessor(const std::string& cascadePath,
     : lockscreenPath(lockscreenPath), warningPath(warningPath)
 {
     if (!face_cascade.load(cascadePath)) {
-        throw std::runtime_error("Nepodařilo se načíst Haar cascade: " + cascadePath);
+        throw std::runtime_error("Failed to load Haar cascade: " + cascadePath);
     }
+}
+
+FaceProcessor::~FaceProcessor() {
+    stopBackgroundDetection();
+}
+
+void FaceProcessor::startBackgroundDetection() {
+    if (_running) return;
+    _running = true;
+    _workerThread = std::thread(&FaceProcessor::backgroundLoop, this);
+}
+
+void FaceProcessor::stopBackgroundDetection() {
+    _running = false;
+    if (_workerThread.joinable()) {
+        _workerThread.join();
+    }
+}
+
+bool FaceProcessor::isFaceDetected() const {
+    return _faceDetected.load();
+}
+
+void FaceProcessor::backgroundLoop() {
+    cv::VideoCapture cap(0);
+    if (!cap.isOpened()) {
+        _running = false;
+        return;
+    }
+
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, 320);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, 240);
+
+    cv::Mat frame, gray;
+    std::vector<cv::Rect> faces;
+
+    while (_running) {
+        cap >> frame;
+        if (frame.empty()) continue;
+
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        cv::equalizeHist(gray, gray);
+
+        face_cascade.detectMultiScale(gray, faces, 1.3, 3, 0, cv::Size(30, 30));
+
+        if (!faces.empty()) {
+            _faceDetected.store(true);
+        }
+        else {
+            _faceDetected.store(false);
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    }
+
+    cap.release();
 }
 
 int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
     cv::VideoCapture cap(0);
-    if (!cap.isOpened()) {
-        std::cerr << "Nepodarilo se otevrit kameru!\n";
-        return EXIT_FAILURE;
-    }
+    if (!cap.isOpened()) return EXIT_FAILURE;
 
     cv::Mat lockscreen = cv::imread(lockscreenPath);
     cv::Mat warning = cv::imread(warningPath);
-    if (lockscreen.empty() || warning.empty()) {
-        std::cerr << "Nepodarilo se nacist lockscreen nebo warning obrazek!\n";
-        return EXIT_FAILURE;
-    }
+    if (lockscreen.empty() || warning.empty()) return EXIT_FAILURE;
 
     std::atomic<bool> terminate_requested{ false };
     std::atomic<float> result_x{ -1.0f };
@@ -35,7 +86,6 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
     std::mutex frame_mutex;
     std::atomic<bool> frame_ready{ false };
 
-    // Vlákno pro čtení kamery
     std::thread capture_thread([&]() {
         cv::Mat local;
         while (!terminate_requested) {
@@ -49,7 +99,6 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
         }
         });
 
-    // Vlákno pro detekci
     std::thread tracker_thread([&]() {
         cv::Mat frame;
         while (!terminate_requested) {
@@ -65,7 +114,6 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
                 frame_ready = false;
             }
 
-            // Detekce obličeje
             cv::Mat gray;
             cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
             cv::equalizeHist(gray, gray);
@@ -75,7 +123,7 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
             face_count = static_cast<int>(faces.size());
 
             if (faces.size() == 1) {
-                cv::Mat mask; // stále musíme předat mask
+                cv::Mat mask;
                 cv::Point2f cupCenter = ImageProcessor::detect_red_object(
                     frame, mask,
                     cv::Scalar(175, 115, 115), cv::Scalar(180, 255, 255)
@@ -89,7 +137,6 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
         }
         });
 
-    // Hlavní smyčka zobrazování
     while (!terminate_requested) {
         cv::Mat frame_copy;
         {
@@ -115,7 +162,7 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
             scene = warning.clone();
         }
 
-        cv::imshow("Face+Cup Detection (Non-blocking)", scene);
+        cv::imshow("Face+Cup Detection", scene);
 
         if (fps) {
             fps->update();
@@ -134,9 +181,7 @@ int FaceProcessor::run_from_camera_plus_FPS(FPSMeter* fps) {
     return EXIT_SUCCESS;
 }
 
-
-
-std::vector<uchar> lossy_quality_limit(cv::Mat& input_img, float target_quality) {
+std::vector<uchar> lossy_quality_limit_fp(cv::Mat& input_img, float target_quality) {
     std::vector<uchar> buf;
     int low = 1, high = 100, best_quality = 100;
 
@@ -162,32 +207,10 @@ std::vector<uchar> lossy_quality_limit(cv::Mat& input_img, float target_quality)
     return buf;
 }
 
-
-
-cv::Point2f FaceProcessor::detect_face(const cv::Mat& frame) {
-    cv::Mat gray;
-    cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
-    cv::equalizeHist(gray, gray);
-
-    std::vector<cv::Rect> faces;
-    face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, cv::Size(30, 30));
-
-    cv::Point2f center(-1.0f, -1.0f);
-    if (!faces.empty()) {
-        cv::Rect face = faces[0];
-        center.x = static_cast<float>(face.x + face.width / 2) / frame.cols;
-        center.y = static_cast<float>(face.y + face.height / 2) / frame.rows;
-    }
-    return center;
-}
-// Replace run_from_camera_plus in FaceProcessor.cpp
-// Optimized version with parallel processing for 60 FPS
-
 int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
     cv::VideoCapture cap(0);
     if (!cap.isOpened()) return EXIT_FAILURE;
 
-    // Nastavení kamery
     cap.set(cv::CAP_PROP_FPS, 60);
     cap.set(cv::CAP_PROP_BUFFERSIZE, 1);
 
@@ -198,14 +221,12 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
     std::atomic<int> face_count{ 0 };
     std::atomic<float> result_x{ -1 }, result_y{ -1 };
 
-    // Sdílené proměnné mezi vlákny
     cv::Mat shared_raw_frame;
     cv::Mat shared_display_frame;
     std::mutex raw_mutex;
     std::mutex display_mutex;
     std::condition_variable frame_ready;
 
-    // Thread 1: Camera grabber
     std::thread grabber([&]() {
         cv::Mat frame;
         while (!terminate) {
@@ -220,7 +241,6 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         }
         });
 
-    // Thread 2: Face detection
     std::thread face_detector([&]() {
         cv::Mat local_frame;
         while (!terminate) {
@@ -240,7 +260,6 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         }
         });
 
-    // Thread 3: Red object detection
     std::thread cup_detector([&]() {
         cv::Mat local_frame;
         while (!terminate) {
@@ -267,7 +286,6 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         }
         });
 
-    // Thread 4: JPEG compression (volitelně, pro zobrazení)
     std::thread compressor([&]() {
         cv::Mat local_frame;
         while (!terminate) {
@@ -277,7 +295,7 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
                 shared_raw_frame.copyTo(local_frame);
             }
 
-            std::vector<uchar> compressed = lossy_quality_limit(local_frame, 50.0f);
+            std::vector<uchar> compressed = lossy_quality_limit_fp(local_frame, 50.0f);
             cv::Mat decoded = cv::imdecode(compressed, cv::IMREAD_COLOR);
 
             {
@@ -287,7 +305,6 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         }
         });
 
-    // Hlavní zobrazovací smyčka
     if (fps) fps->reset();
     while (!terminate) {
         cv::Mat scene;
@@ -323,7 +340,6 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
         if (cv::waitKey(16) == 27) terminate = true;
     }
 
-    // Cleanup
     terminate = true;
     frame_ready.notify_all();
     if (grabber.joinable()) grabber.join();
@@ -336,9 +352,23 @@ int FaceProcessor::run_from_camera_plus(FPSMeter* fps) {
     return EXIT_SUCCESS;
 }
 
-
-
-
 int FaceProcessor::run_from_camera(FPSMeter* fps) {
     return run_from_camera_plus(fps);
+}
+
+cv::Point2f FaceProcessor::detect_face(const cv::Mat& frame) {
+    cv::Mat gray;
+    cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(gray, gray);
+
+    std::vector<cv::Rect> faces;
+    face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, cv::Size(30, 30));
+
+    cv::Point2f center(-1.0f, -1.0f);
+    if (!faces.empty()) {
+        cv::Rect face = faces[0];
+        center.x = static_cast<float>(face.x + face.width / 2) / frame.cols;
+        center.y = static_cast<float>(face.y + face.height / 2) / frame.rows;
+    }
+    return center;
 }
