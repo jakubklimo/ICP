@@ -260,13 +260,24 @@ void ShaderLoaderApp::drawLoop() {
             cubeTexture->bind();
 
             float t = globalTime;
-            glm::mat4 model = glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.5f, 1.0f, 0.0f));
             glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
             glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
 
-            glm::mat4 mvp = proj * view * model;
-            shaderCube->setUniform("uMVP", mvp);
+            // První krychle (pùvodní)
+            glm::mat4 model1 = glm::mat4(1.0f);
+            model1 = glm::rotate(model1, t, glm::vec3(0.5f, 1.0f, 0.0f));
 
+            glm::mat4 mvp1 = proj * view * model1;
+            shaderCube->setUniform("uMVP", mvp1);
+            cubeModel->draw();
+
+            // Druhá krychle (posunutá o 2.5 jednotky doprava)
+            glm::mat4 model2 = glm::mat4(1.0f);
+            model2 = glm::translate(model2, glm::vec3(2.5f, 0.0f, 0.0f));
+            model2 = glm::rotate(model2, t, glm::vec3(0.5f, 1.0f, 0.0f));
+
+            glm::mat4 mvp2 = proj * view * model2;
+            shaderCube->setUniform("uMVP", mvp2);
             cubeModel->draw();
         }
 
