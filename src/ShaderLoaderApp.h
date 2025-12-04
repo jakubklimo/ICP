@@ -17,7 +17,9 @@ public:
     bool init();
     void run();
 
-    std::unique_ptr<InputManager>& getInputManager() { return inputManager; }
+    InputManager* getInputManager() { return inputManager.get(); }
+
+
 
 
 private:

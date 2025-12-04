@@ -105,7 +105,7 @@ bool ShaderLoaderApp::init() {
 
     // zde VYTVOØ InputManager
     inputManager = std::make_unique<InputManager>(window);
-    glfwSetWindowUserPointer(window, this); // pointer na ShaderLoaderApp pro mouse a scroll callbacky
+    glfwSetWindowUserPointer(window, this);
 
 
 

@@ -5,16 +5,17 @@
 InputManager::InputManager(GLFWwindow* win)
     : window(win), vsync_on(true)
 {
-    // statický callback, získá InputManager z user pointeru
-    glfwSetKeyCallback(window, [](GLFWwindow* win, int key, int scancode, int action, int mods) {
-        InputManager* manager = reinterpret_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (manager)
-            manager->keyCallback(win, key, scancode, action, mods);
+    glfwSetKeyCallback(window,
+        [](GLFWwindow* win, int key, int scancode, int action, int mods)
+        {
+            // zavoláme statickou InputManager callback
+            InputManager::keyCallback(win, key, scancode, action, mods);
         });
 
     glfwSwapInterval(1);
-    updateWindowTitle();
 }
+
+
 
 
 void InputManager::toggleVSync() {
@@ -29,25 +30,28 @@ void InputManager::updateWindowTitle() {
     glfwSetWindowTitle(window, title.c_str());
 }
 
-// static callback
-void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
     if (action != GLFW_PRESS && action != GLFW_REPEAT) return;
 
-    InputManager* manager = reinterpret_cast<InputManager*>(glfwGetWindowUserPointer(window));
+    ShaderLoaderApp* app = reinterpret_cast<ShaderLoaderApp*>(glfwGetWindowUserPointer(window));
+    if (!app) return;
+
+    InputManager* manager = app->getInputManager();
     if (!manager) return;
 
     switch (key) {
     case GLFW_KEY_ESCAPE:
         glfwSetWindowShouldClose(window, GLFW_TRUE);
         break;
+
     case GLFW_KEY_V:
         manager->toggleVSync();
-        break;
-    default:
         break;
     }
 }
 
+
 void InputManager::processInput() {
-    // zde mùžeš pøípadnì implementovat další zpracování kláves
+    
 }
